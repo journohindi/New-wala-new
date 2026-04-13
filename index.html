@@ -20,7 +20,6 @@
         ::-webkit-scrollbar-track { background: #050505; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
-        /* Badge Styles */
         .badge-critical { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
         .badge-success { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
         .badge-warning { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
@@ -44,9 +43,10 @@
         
         <div class="flex flex-wrap gap-2 mb-8 bg-white/5 p-1.5 rounded-xl border border-white/10 w-fit">
             <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn active px-5 py-2 rounded-lg text-sm font-semibold tracking-wide">Macro Dashboard</button>
-            <button onclick="switchTab('long-form')" id="btn-long-form" class="tab-btn px-5 py-2 rounded-lg text-sm font-semibold text-gray-400 tracking-wide">Long-Form Command</button>
-            <button onclick="switchTab('shorts')" id="btn-shorts" class="tab-btn px-5 py-2 rounded-lg text-sm font-semibold text-gray-400 tracking-wide">Shorts Command</button>
-            <button onclick="switchTab('single-video')" id="btn-single-video" class="tab-btn px-5 py-2 rounded-lg text-sm font-semibold text-gray-400 tracking-wide">Single Video Audit</button>
+            <button onclick="switchTab('long-data')" id="btn-long-data" class="tab-btn px-5 py-2 rounded-lg text-sm font-semibold text-gray-400 tracking-wide">Long-Form Data</button>
+            <button onclick="switchTab('long-audit')" id="btn-long-audit" class="tab-btn px-5 py-2 rounded-lg text-sm font-semibold text-gray-400 tracking-wide">Long-Form Audit</button>
+            <button onclick="switchTab('short-data')" id="btn-short-data" class="tab-btn px-5 py-2 rounded-lg text-sm font-semibold text-gray-400 tracking-wide">Shorts Data</button>
+            <button onclick="switchTab('short-audit')" id="btn-short-audit" class="tab-btn px-5 py-2 rounded-lg text-sm font-semibold text-gray-400 tracking-wide">Shorts Audit</button>
         </div>
 
         <div id="dashboard" class="tab-content active space-y-6">
@@ -102,11 +102,10 @@
             </div>
         </div>
 
-        <div id="long-form" class="tab-content space-y-6">
+        <div id="long-data" class="tab-content space-y-6">
             <div class="glass-panel rounded-2xl overflow-hidden">
-                <div class="p-6 border-b border-white/10 bg-gradient-to-r from-white/5 to-transparent">
+                <div class="p-6 border-b border-white/10 bg-gradient-to-r from-blue-900/20 to-transparent">
                     <h2 class="text-xl font-bold text-white">Long-Form: Top 10 High Yield</h2>
-                    <p class="text-xs text-gray-400 mt-1">Videos over 60 seconds. Scale this specific architecture.</p>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm whitespace-nowrap">
@@ -143,11 +142,67 @@
             </div>
         </div>
 
-        <div id="shorts" class="tab-content space-y-6">
+        <div id="long-audit" class="tab-content">
+            <div class="glass-panel p-5 rounded-2xl mb-6 flex flex-col md:flex-row items-start md:items-center gap-4 border-l-4 border-l-blue-500">
+                <label for="select-long" class="text-sm font-bold text-white whitespace-nowrap tracking-wide">Target Long-Form Asset:</label>
+                <div class="relative w-full">
+                    <select id="select-long" onchange="updateAuditDisplay('long')" disabled class="w-full bg-black/50 border border-white/10 text-white text-sm rounded-xl block p-3 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all cursor-not-allowed">
+                        <option value="">Awaiting Data...</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl">
+                <div class="p-8 border-b border-white/10 bg-gradient-to-br from-blue-900/20 to-transparent relative">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="text-blue-400 font-semibold text-xs tracking-widest uppercase">Long-Form Diagnostic</div>
+                    </div>
+                    <h2 id="l-audit-title" class="text-2xl font-black text-white max-w-3xl leading-snug tracking-tight">Select an asset...</h2>
+                    <div class="flex gap-3 mt-5">
+                        <span id="l-audit-duration" class="px-3 py-1.5 bg-black/40 rounded-lg text-xs font-semibold text-gray-300 border border-white/5">Duration: --</span>
+                        <span id="l-audit-issue" class="px-3 py-1.5 rounded-lg text-xs font-semibold hidden tracking-wide">Status: --</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/5 bg-black/20">
+                    <div class="p-6">
+                        <div class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Total Views</div>
+                        <div id="l-audit-views" class="text-3xl font-black text-white tracking-tighter">--</div>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Impressions</div>
+                        <div id="l-audit-impressions" class="text-3xl font-black text-white tracking-tighter">--</div>
+                    </div>
+                    <div class="p-6" id="l-audit-ctr-container">
+                        <div class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Click-Through Rate</div>
+                        <div id="l-audit-ctr" class="text-3xl font-black text-white tracking-tighter">--</div>
+                    </div>
+                    <div class="p-6" id="l-audit-apv-container">
+                        <div class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Avg % Viewed</div>
+                        <div id="l-audit-apv" class="text-3xl font-black text-white tracking-tighter">--</div>
+                    </div>
+                </div>
+
+                <div class="p-8 space-y-6">
+                    <div class="glass-panel border-l-4 border-l-blue-500 rounded-r-xl p-6">
+                        <h4 class="text-white font-bold text-sm tracking-wide mb-2">Metadata Architecture (CTR)</h4>
+                        <p id="l-audit-setup" class="text-gray-400 text-sm leading-relaxed">--</p>
+                    </div>
+                    <div class="glass-panel border-l-4 border-l-purple-500 rounded-r-xl p-6">
+                        <h4 class="text-white font-bold text-sm tracking-wide mb-2">Retention Mechanics (APV)</h4>
+                        <p id="l-audit-execution" class="text-gray-400 text-sm leading-relaxed">--</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="short-data" class="tab-content space-y-6">
             <div class="glass-panel rounded-2xl overflow-hidden">
-                <div class="p-6 border-b border-white/10 bg-gradient-to-r from-white/5 to-transparent">
+                <div class="p-6 border-b border-white/10 bg-gradient-to-r from-orange-900/20 to-transparent">
                     <h2 class="text-xl font-bold text-white">Shorts: Top 10 High Yield</h2>
-                    <p class="text-xs text-gray-400 mt-1">Videos under 60 seconds. Analyze hook mechanics here.</p>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm whitespace-nowrap">
@@ -168,7 +223,6 @@
             <div class="glass-panel rounded-2xl overflow-hidden border-orange-500/20">
                 <div class="p-6 border-b border-white/10 bg-gradient-to-r from-orange-900/20 to-transparent">
                     <h2 class="text-lg font-bold text-orange-400">Shorts: Dead Weight (Bottom 10)</h2>
-                    <p class="text-xs text-orange-300/70 mt-1">Unlist these. They destroy algorithmic channel authority.</p>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm whitespace-nowrap">
@@ -185,13 +239,12 @@
             </div>
         </div>
 
-        <div id="single-video" class="tab-content">
-            
-            <div class="glass-panel p-5 rounded-2xl mb-6 flex flex-col md:flex-row items-start md:items-center gap-4">
-                <label for="videoSelect" class="text-sm font-bold text-white whitespace-nowrap tracking-wide">Target Asset:</label>
+        <div id="short-audit" class="tab-content">
+            <div class="glass-panel p-5 rounded-2xl mb-6 flex flex-col md:flex-row items-start md:items-center gap-4 border-l-4 border-l-orange-500">
+                <label for="select-short" class="text-sm font-bold text-white whitespace-nowrap tracking-wide">Target Shorts Asset:</label>
                 <div class="relative w-full">
-                    <select id="videoSelect" onchange="updateAuditDisplay()" disabled class="w-full bg-black/50 border border-white/10 text-white text-sm rounded-xl block p-3 appearance-none focus:outline-none focus:ring-2 focus:ring-white/20 transition-all cursor-not-allowed">
-                        <option value="">Awaiting Data Synchronization...</option>
+                    <select id="select-short" onchange="updateAuditDisplay('short')" disabled class="w-full bg-black/50 border border-white/10 text-white text-sm rounded-xl block p-3 appearance-none focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all cursor-not-allowed">
+                        <option value="">Awaiting Data...</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -200,49 +253,44 @@
             </div>
 
             <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl">
-                <div class="p-8 border-b border-white/10 bg-gradient-to-br from-white/5 to-transparent relative">
+                <div class="p-8 border-b border-white/10 bg-gradient-to-br from-orange-900/20 to-transparent relative">
                     <div class="flex items-center gap-3 mb-3">
-                        <span id="audit-format" class="px-2.5 py-1 bg-white/10 rounded text-xs font-bold text-white tracking-wider uppercase">--</span>
-                        <div class="text-gray-400 font-semibold text-xs tracking-widest uppercase">Deep Dive Diagnostic</div>
+                        <div class="text-orange-400 font-semibold text-xs tracking-widest uppercase">Shorts Diagnostic</div>
                     </div>
-                    <h2 id="audit-title" class="text-2xl font-black text-white max-w-3xl leading-snug tracking-tight">Select an asset to execute analysis</h2>
+                    <h2 id="s-audit-title" class="text-2xl font-black text-white max-w-3xl leading-snug tracking-tight">Select an asset...</h2>
                     <div class="flex gap-3 mt-5">
-                        <span id="audit-duration" class="px-3 py-1.5 bg-black/40 rounded-lg text-xs font-semibold text-gray-300 border border-white/5">Duration: --</span>
-                        <span id="audit-issue" class="px-3 py-1.5 rounded-lg text-xs font-semibold hidden tracking-wide">Status: --</span>
+                        <span id="s-audit-duration" class="px-3 py-1.5 bg-black/40 rounded-lg text-xs font-semibold text-gray-300 border border-white/5">Duration: --</span>
+                        <span id="s-audit-issue" class="px-3 py-1.5 rounded-lg text-xs font-semibold hidden tracking-wide">Status: --</span>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/5 bg-black/20">
                     <div class="p-6">
                         <div class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Total Views</div>
-                        <div id="audit-views" class="text-3xl font-black text-white tracking-tighter">--</div>
+                        <div id="s-audit-views" class="text-3xl font-black text-white tracking-tighter">--</div>
                     </div>
                     <div class="p-6">
                         <div class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Impressions</div>
-                        <div id="audit-impressions" class="text-3xl font-black text-white tracking-tighter">--</div>
+                        <div id="s-audit-impressions" class="text-3xl font-black text-white tracking-tighter">--</div>
                     </div>
-                    <div class="p-6" id="audit-ctr-container">
+                    <div class="p-6" id="s-audit-ctr-container">
                         <div class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Click-Through Rate</div>
-                        <div id="audit-ctr" class="text-3xl font-black text-white tracking-tighter">--</div>
+                        <div id="s-audit-ctr" class="text-3xl font-black text-white tracking-tighter">--</div>
                     </div>
-                    <div class="p-6" id="audit-apv-container">
+                    <div class="p-6" id="s-audit-apv-container">
                         <div class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Avg % Viewed</div>
-                        <div id="audit-apv" class="text-3xl font-black text-white tracking-tighter">--</div>
+                        <div id="s-audit-apv" class="text-3xl font-black text-white tracking-tighter">--</div>
                     </div>
                 </div>
 
                 <div class="p-8 space-y-6">
-                    <div class="glass-panel border-l-4 border-l-blue-500 rounded-r-xl p-6">
-                        <h4 class="text-white font-bold text-sm tracking-wide mb-2 flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Metadata Architecture (CTR)
-                        </h4>
-                        <p id="audit-setup" class="text-gray-400 text-sm leading-relaxed">--</p>
+                    <div class="glass-panel border-l-4 border-l-orange-500 rounded-r-xl p-6">
+                        <h4 class="text-white font-bold text-sm tracking-wide mb-2">Feed Discovery (CTR)</h4>
+                        <p id="s-audit-setup" class="text-gray-400 text-sm leading-relaxed">--</p>
                     </div>
                     <div class="glass-panel border-l-4 border-l-purple-500 rounded-r-xl p-6">
-                        <h4 class="text-white font-bold text-sm tracking-wide mb-2 flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span> Retention Mechanics (APV)
-                        </h4>
-                        <p id="audit-execution" class="text-gray-400 text-sm leading-relaxed">--</p>
+                        <h4 class="text-white font-bold text-sm tracking-wide mb-2">Loop Mechanics (APV)</h4>
+                        <p id="s-audit-execution" class="text-gray-400 text-sm leading-relaxed">--</p>
                     </div>
                 </div>
             </div>
@@ -261,10 +309,7 @@
                 el.classList.add('text-gray-400');
             });
             
-            // Add slight delay for animation
-            setTimeout(() => {
-                document.getElementById(tabId).classList.add('active');
-            }, 50);
+            setTimeout(() => { document.getElementById(tabId).classList.add('active'); }, 50);
 
             const activeBtn = document.getElementById('btn-' + tabId);
             activeBtn.classList.remove('text-gray-400');
@@ -288,9 +333,7 @@
                 download: true,
                 header: true,
                 skipEmptyLines: true,
-                complete: function(results) {
-                    processCSVData(results.data);
-                },
+                complete: function(results) { processCSVData(results.data); },
                 error: function(err) {
                     const statusEl = document.getElementById('loading-status');
                     statusEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500"></span> Fetch Failed`;
@@ -335,17 +378,7 @@
                     apvRaw: apv
                 };
 
-                if (isShort) {
-                    shortStats.count++; shortStats.views += views; shortStats.imp += imp;
-                    shortStats.clicks += (imp * (ctr / 100)); shortStats.apvSum += apv;
-                    shortArray.push(videoObj);
-                } else {
-                    longStats.count++; longStats.views += views; longStats.imp += imp;
-                    longStats.clicks += (imp * (ctr / 100)); longStats.apvSum += apv;
-                    longArray.push(videoObj);
-                }
-
-                // AI Diagnostics
+                // Diagnostics Logic
                 let setupDiag = "", execDiag = "", iLabel = "Normal", iColor = "badge-success";
                 
                 if (imp > 1000 && ctr < 2.0) {
@@ -367,6 +400,9 @@
                     } else {
                         execDiag = `Average Short retention (${apv}%). Push pacing faster in the edit.`;
                     }
+                    shortStats.count++; shortStats.views += views; shortStats.imp += imp;
+                    shortStats.clicks += (imp * (ctr / 100)); shortStats.apvSum += apv;
+                    shortArray.push(videoObj);
                 } else {
                     if (apv < 25) {
                         execDiag = `RETENTION COLLAPSE: APV of ${apv}% on long-form indicates extremely slow pacing. You are losing the audience before the narrative builds. Restructure your first 60 seconds.`;
@@ -377,6 +413,9 @@
                     } else {
                         execDiag = `Standard retention (${apv}%). Identify specific drop-offs in the Studio retention graph.`;
                     }
+                    longStats.count++; longStats.views += views; longStats.imp += imp;
+                    longStats.clicks += (imp * (ctr / 100)); longStats.apvSum += apv;
+                    longArray.push(videoObj);
                 }
 
                 videoObj.diagSetup = setupDiag;
@@ -387,7 +426,7 @@
                 globalVideoData[vidId] = videoObj;
             });
 
-            // 1. Dashboard Update
+            // Populate Dashboard
             document.getElementById('dash-views').textContent = (totalViews / 1000000).toFixed(2) + 'M';
             document.getElementById('dash-wt').textContent = (totalWT / 1000).toFixed(1) + 'K';
             document.getElementById('dash-ctr').textContent = totalImp > 0 ? ((totalClicks / totalImp) * 100).toFixed(2) + '%' : '0%';
@@ -418,7 +457,6 @@
                 </tr>
             `;
 
-            // Chart Update
             if(globalChart) globalChart.destroy();
             const ctx = document.getElementById('distributionChart').getContext('2d');
             globalChart = new Chart(ctx, {
@@ -430,11 +468,11 @@
                 options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: { color: '#a3a3a3', font: { family: 'Inter' } } } } }
             });
 
-            // 2. Sorting & Segregating Arrays
+            // Sort Arrays
             longArray.sort((a, b) => b.views - a.views);
             shortArray.sort((a, b) => b.views - a.views);
 
-            // Populating Long-Form Tab
+            // Render Long-Form Tables
             let longTopHtml = '';
             longArray.slice(0, 10).forEach((v, i) => {
                 longTopHtml += `
@@ -449,7 +487,6 @@
             document.getElementById('long-top-body').innerHTML = longTopHtml;
 
             let longBottomHtml = '';
-            // Get bottom 5 long form videos (excluding 0 views)
             const bottomLongs = [...longArray].filter(v => v.views > 0).sort((a, b) => a.views - b.views);
             bottomLongs.slice(0, 5).forEach((v) => {
                 longBottomHtml += `
@@ -461,8 +498,7 @@
             });
             document.getElementById('long-bottom-body').innerHTML = longBottomHtml;
 
-
-            // Populating Shorts Tab
+            // Render Shorts Tables
             let shortTopHtml = '';
             shortArray.slice(0, 10).forEach((v, i) => {
                 shortTopHtml += `
@@ -488,36 +524,30 @@
             });
             document.getElementById('short-bottom-body').innerHTML = shortBottomHtml;
 
-
-            // 3. Structured Audit Dropdown (Using OptGroup)
-            const selectEl = document.getElementById('videoSelect');
-            selectEl.innerHTML = '<option value="">Select a specific asset to analyze...</option>';
-            
-            const optGroupLong = document.createElement('optgroup');
-            optGroupLong.label = "LONG-FORM CONTENT";
+            // Populate Long Dropdown
+            const selectLong = document.getElementById('select-long');
+            selectLong.innerHTML = '<option value="">Select Long-Form Video...</option>';
             longArray.forEach(v => {
                 const opt = document.createElement('option');
                 opt.value = v.id;
                 opt.textContent = `[${v.views.toLocaleString()} Views] - ${v.title.substring(0, 70)}...`;
-                optGroupLong.appendChild(opt);
+                selectLong.appendChild(opt);
             });
+            selectLong.disabled = false;
+            selectLong.classList.remove('cursor-not-allowed');
 
-            const optGroupShort = document.createElement('optgroup');
-            optGroupShort.label = "SHORTS CONTENT";
+            // Populate Short Dropdown
+            const selectShort = document.getElementById('select-short');
+            selectShort.innerHTML = '<option value="">Select Shorts Video...</option>';
             shortArray.forEach(v => {
                 const opt = document.createElement('option');
                 opt.value = v.id;
                 opt.textContent = `[${v.views.toLocaleString()} Views] - ${v.title.substring(0, 70)}...`;
-                optGroupShort.appendChild(opt);
+                selectShort.appendChild(opt);
             });
+            selectShort.disabled = false;
+            selectShort.classList.remove('cursor-not-allowed');
 
-            selectEl.appendChild(optGroupLong);
-            selectEl.appendChild(optGroupShort);
-
-            // Finalize UI
-            selectEl.disabled = false;
-            selectEl.classList.remove('opacity-50', 'cursor-not-allowed');
-            
             const statusEl = document.getElementById('loading-status');
             statusEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500"></span> Live Data Synced`;
             statusEl.classList.replace('bg-gray-800', 'bg-green-900/20');
@@ -525,35 +555,34 @@
             statusEl.classList.replace('text-gray-300', 'text-green-400');
         }
 
-        function updateAuditDisplay() {
-            const selectedId = document.getElementById('videoSelect').value;
+        function updateAuditDisplay(type) {
+            const prefix = type === 'long' ? 'l' : 's';
+            const selectedId = document.getElementById(`select-${type}`).value;
             if(!selectedId || !globalVideoData[selectedId]) return;
 
             const data = globalVideoData[selectedId];
 
-            document.getElementById('audit-title').textContent = data.title;
-            document.getElementById('audit-format').textContent = data.format;
-            document.getElementById('audit-duration').textContent = "Duration: " + data.duration;
-            document.getElementById('audit-views').textContent = data.views.toLocaleString();
-            document.getElementById('audit-impressions').textContent = data.imp.toLocaleString();
-            document.getElementById('audit-ctr').textContent = data.ctrRaw.toFixed(2) + "%";
-            document.getElementById('audit-apv').textContent = data.apvRaw.toFixed(2) + "%";
+            document.getElementById(`${prefix}-audit-title`).textContent = data.title;
+            document.getElementById(`${prefix}-audit-duration`).textContent = "Duration: " + data.duration;
+            document.getElementById(`${prefix}-audit-views`).textContent = data.views.toLocaleString();
+            document.getElementById(`${prefix}-audit-impressions`).textContent = data.imp.toLocaleString();
+            document.getElementById(`${prefix}-audit-ctr`).textContent = data.ctrRaw.toFixed(2) + "%";
+            document.getElementById(`${prefix}-audit-apv`).textContent = data.apvRaw.toFixed(2) + "%";
 
-            const tag = document.getElementById('audit-issue');
+            const tag = document.getElementById(`${prefix}-audit-issue`);
             tag.classList.remove('hidden', 'badge-critical', 'badge-success', 'badge-warning');
             tag.classList.add(data.tagColor);
             tag.textContent = "Status: " + data.tagLabel;
 
-            // Heat mapping for stats backgrounds based on severity
             const isShort = data.format === 'Short';
             const poorCtr = data.ctrRaw < 2.0;
             const poorApv = isShort ? data.apvRaw < 70 : data.apvRaw < 25;
 
-            document.getElementById('audit-ctr-container').className = poorCtr ? "p-6 bg-red-900/10" : "p-6";
-            document.getElementById('audit-apv-container').className = poorApv ? "p-6 bg-red-900/10" : "p-6";
+            document.getElementById(`${prefix}-audit-ctr-container`).className = poorCtr ? "p-6 bg-red-900/10" : "p-6";
+            document.getElementById(`${prefix}-audit-apv-container`).className = poorApv ? "p-6 bg-red-900/10" : "p-6";
 
-            document.getElementById('audit-setup').textContent = data.diagSetup;
-            document.getElementById('audit-execution').textContent = data.diagExec;
+            document.getElementById(`${prefix}-audit-setup`).textContent = data.diagSetup;
+            document.getElementById(`${prefix}-audit-execution`).textContent = data.diagExec;
         }
 
         window.onload = initializeData;

@@ -378,7 +378,6 @@
                     apvRaw: apv
                 };
 
-                // Diagnostics Logic
                 let setupDiag = "", execDiag = "", iLabel = "Normal", iColor = "badge-success";
                 
                 if (imp > 1000 && ctr < 2.0) {
@@ -426,7 +425,6 @@
                 globalVideoData[vidId] = videoObj;
             });
 
-            // Populate Dashboard
             document.getElementById('dash-views').textContent = (totalViews / 1000000).toFixed(2) + 'M';
             document.getElementById('dash-wt').textContent = (totalWT / 1000).toFixed(1) + 'K';
             document.getElementById('dash-ctr').textContent = totalImp > 0 ? ((totalClicks / totalImp) * 100).toFixed(2) + '%' : '0%';
@@ -468,11 +466,9 @@
                 options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: { color: '#a3a3a3', font: { family: 'Inter' } } } } }
             });
 
-            // Sort Arrays
             longArray.sort((a, b) => b.views - a.views);
             shortArray.sort((a, b) => b.views - a.views);
 
-            // Render Long-Form Tables
             let longTopHtml = '';
             longArray.slice(0, 10).forEach((v, i) => {
                 longTopHtml += `
@@ -498,7 +494,6 @@
             });
             document.getElementById('long-bottom-body').innerHTML = longBottomHtml;
 
-            // Render Shorts Tables
             let shortTopHtml = '';
             shortArray.slice(0, 10).forEach((v, i) => {
                 shortTopHtml += `
@@ -524,7 +519,6 @@
             });
             document.getElementById('short-bottom-body').innerHTML = shortBottomHtml;
 
-            // Populate Long Dropdown
             const selectLong = document.getElementById('select-long');
             selectLong.innerHTML = '<option value="">Select Long-Form Video...</option>';
             longArray.forEach(v => {
@@ -536,7 +530,6 @@
             selectLong.disabled = false;
             selectLong.classList.remove('cursor-not-allowed');
 
-            // Populate Short Dropdown
             const selectShort = document.getElementById('select-short');
             selectShort.innerHTML = '<option value="">Select Shorts Video...</option>';
             shortArray.forEach(v => {
